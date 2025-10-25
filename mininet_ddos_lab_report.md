@@ -60,7 +60,7 @@ mininet> h2 python3 -m http.server 8000 --bind 10.0.0.2 &
 ```
 Проверка с h1:
 ```
-mininet> h1 curl -sS http://10.0.0.2:8000/ -o /home/$USER/experiment_results/logs/http_baseline.txt
+mininet> h1 curl -sS http://10.0.0.2:8000/ -o /home/experiment_results/logs/http_baseline.txt
 ```
 **Скриншот curl:**  
 `![](img/http_baseline.png)`
@@ -72,14 +72,14 @@ mininet> h2 iperf3 -s -D
 ```
 На h1 (клиент):
 ```
-mininet> h1 iperf3 -c 10.0.0.2 -b 5M -t 10 > /home/$USER/experiment_results/logs/iperf3_baseline_5M.txt
+mininet> h1 iperf3 -c 10.0.0.2 -b 5M -t 10 > /home/experiment_results/logs/iperf3_baseline_5M.txt
 ```
 **Скриншот iperf3 baseline:**  
 `![](img/iperf_5M.png)`
 
 ### 5.4 Базовый UDP‑тест (контролируемый)
 ```
-mininet> h1 iperf3 -c 10.0.0.2 -u -b 5M -t 10 > /home/$USER/experiment_results/logs/iperf3_udp_baseline.txt
+mininet> h1 iperf3 -c 10.0.0.2 -u -b 5M -t 10 > /home/experiment_results/logs/iperf3_udp_baseline.txt
 ```
 **Скриншот UDP baseline:**  
 `![](img/iperf_udp.png)`
@@ -91,20 +91,20 @@ mininet> h1 iperf3 -c 10.0.0.2 -u -b 5M -t 10 > /home/$USER/experiment_results/l
 
 ### 6.1 TCP — повышенная нагрузка
 ```
-mininet> h1 iperf3 -c 10.0.0.2 -b 20M -t 30 > /home/$USER/experiment_results/logs/iperf3_20M.txt
-mininet> h1 iperf3 -c 10.0.0.2 -b 50M -t 30 > /home/$USER/experiment_results/logs/iperf3_50M.txt
+mininet> h1 iperf3 -c 10.0.0.2 -b 20M -t 30 > /home/experiment_results/logs/iperf3_20M.txt
+mininet> h1 iperf3 -c 10.0.0.2 -b 50M -t 30 > /home/experiment_results/logs/iperf3_50M.txt
 ```
 **Скриншот:**  
 `![](img/iperf_20M.png)`
 
 ### 6.2 UDP — повышенная нагрузка (контролируемая)
 ```
-mininet> h1 iperf3 -c 10.0.0.2 -u -b 15M -t 30 > /home/$USER/experiment_results/logs/iperf3_udp_15M.txt
+mininet> h1 iperf3 -c 10.0.0.2 -u -b 15M -t 30 > /home/experiment_results/logs/iperf3_udp_15M.txt
 ```
 
 ### 6.3 HTTP‑нагрузка (ApacheBench)
 ```
-mininet> h1 ab -n 2000 -c 100 http://10.0.0.2:8000/ > /home/$USER/experiment_results/logs/ab_2000x100.txt
+mininet> h1 ab -n 2000 -c 100 http://10.0.0.2:8000/ > /home/experiment_results/logs/ab_2000x100.txt
 ```
 **Скриншот ab:**  
 `![](img/ab_output.png)`
@@ -120,8 +120,8 @@ net.addLink(h1, s1, cls=TCLink, bw=10, delay='100ms', loss=2)
 
 ### 6.5 Сбор данных во время нагрузок
 ```
-mininet> h3 tcpdump -i h3-eth0 -w /home/$USER/experiment_results/trace_during.pcap -c 20000 &
-mininet> h2 ss -ant > /home/$USER/experiment_results/logs/ss_during.txt
+mininet> h3 tcpdump -i h3-eth0 -w /home/experiment_results/trace_during.pcap -c 20000 &
+mininet> h2 ss -ant > /home/experiment_results/logs/ss_during.txt
 ```
 **Скриншот tcpdump head:**  
 `![](img/tcpdump_head.png)`
