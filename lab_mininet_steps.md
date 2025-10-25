@@ -65,7 +65,9 @@ def run_topology():
     h1 = net.addHost('h1', ip='10.0.0.1/24')
     h2 = net.addHost('h2', ip='10.0.0.2/24')
     h3 = net.addHost('h3', ip='10.0.0.3/24')
-    s1 = net.addSwitch('s1')
+    
+    # Коммутатор в режиме standalone — форвардит пакеты без контроллера
+    s1 = net.addSwitch('s1', failMode='standalone')
 
     print("*** Создание линков")
     net.addLink(h1, s1)
@@ -75,9 +77,10 @@ def run_topology():
     print("*** Запуск сети")
     net.start()
 
-    print("*** Настройка хостов")
+    print("*** Поднимаем интерфейсы всех хостов")
     for h in (h1, h2, h3):
-        h.cmd('ip route add default via 10.0.0.254 || true')
+        for intf in h.intfList():
+            h.cmd(f'ifconfig {intf} up')
 
     print("*** Запуск простого HTTP-сервера на h2")
     h2.cmd('nohup python3 -m http.server 8000 >/tmp/http_server.log 2>&1 &')
