@@ -82,8 +82,18 @@ def run_topology():
         for intf in h.intfList():
             h.cmd(f'ifconfig {intf} up')
 
-    print("*** Запуск простого HTTP-сервера на h2")
-    h2.cmd('nohup python3 -m http.server 8000 >/tmp/http_server.log 2>&1 &')
+    print("*** Запуск простого HTTP-сервера на h2 с чистым текстом")
+    h2.cmd("""nohup python3 -c '
+import socket
+s = socket.socket()
+s.bind(("0.0.0.0", 8000))
+s.listen(1)
+while True:
+    c, addr = s.accept()
+    data = c.recv(1024)
+    c.sendall(b"HTTP/1.1 200 OK\\nContent-Type: text/plain\\n\\nHello from victim\\n")
+    c.close()
+' >/tmp/http_server.log 2>&1 &""")
 
     print("*** Сеть готова: h1 (клиент), h2 (сервер), h3 (монитор)")
     print("*** Для выхода из CLI набери: exit")
