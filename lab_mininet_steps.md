@@ -43,55 +43,55 @@ nano ~/mininet_safe_topology.py
 
 ```python
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
-mininet_safe_topology.py
-Топология:
- h1 (Client) --- s1 --- h2 (Server)
-                   \
-                    \- h3 (Monitor)
+Безопасная минимальная топология Mininet:
+h1 (Client) —— s1 —— h2 (Server)
+                │
+                └—— h3 (Monitor)
 """
 
 from mininet.net import Mininet
-from mininet.node import Controller, OVSSwitch
+from mininet.node import OVSSwitch
 from mininet.link import TCLink
 from mininet.cli import CLI
-from mininet.log import setLogLevel, info
 
-def run():
-    setLogLevel('info')
-    net = Mininet(controller=Controller, switch=OVSSwitch, link=TCLink)
+def run_topology():
+    print("*** Создаётся сеть без контроллера...")
+    net = Mininet(controller=None, switch=OVSSwitch, link=TCLink)
 
-    info('*** Adding controller\n')
-    net.addController('c0')
-
-    info('*** Adding hosts\n')
+    print("*** Добавление узлов")
     h1 = net.addHost('h1', ip='10.0.0.1/24')
     h2 = net.addHost('h2', ip='10.0.0.2/24')
     h3 = net.addHost('h3', ip='10.0.0.3/24')
-
-    info('*** Adding switch\n')
     s1 = net.addSwitch('s1')
 
-    info('*** Creating links\n')
+    print("*** Создание линков")
     net.addLink(h1, s1)
     net.addLink(h2, s1)
     net.addLink(h3, s1)
 
-    info('*** Starting network\n')
+    print("*** Запуск сети")
     net.start()
 
-    info('*** Starting HTTP server on h2:8000\n')
-    h2.cmd('python3 -m http.server 8000 --bind 10.0.0.2 &')
+    print("*** Настройка хостов")
+    for h in (h1, h2, h3):
+        h.cmd('ip route add default via 10.0.0.254 || true')
 
-    info('*** Starting tcpdump on h3\n')
-    h3.cmd('tcpdump -i h3-eth0 -w /home/$USER/experiment_results/trace.pcap -c 1000 &')
+    print("*** Запуск простого HTTP-сервера на h2")
+    h2.cmd('nohup python3 -m http.server 8000 >/tmp/http_server.log 2>&1 &')
 
-    info('*** Network ready! Use Mininet CLI\n')
+    print("*** Сеть готова: h1 (клиент), h2 (сервер), h3 (монитор)")
+    print("*** Для выхода из CLI набери: exit")
     CLI(net)
+
+    print("*** Остановка сети")
     net.stop()
 
-if __name__ == "__main__":
-    run()
+if __name__ == '__main__':
+    run_topology()
+
 ```
 
 Сохраняем (`Ctrl+O`, `Enter`, `Ctrl+X`), делаем файл исполняемым:
